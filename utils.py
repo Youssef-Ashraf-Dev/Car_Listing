@@ -5,6 +5,9 @@ import json
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
+from email.message import EmailMessage
+from datetime import datetime
+import mimetypes
 
 
 def get_car_type(image_bytes: bytes) -> str:
@@ -21,42 +24,67 @@ def get_car_type(image_bytes: bytes) -> str:
     return detected_type
 
 
-def send_email(recipient_email: str, json_data: dict, image_path: str, image_name: str):
+def send_email(recipient_email: str, json_data: dict, image_bytes: bytes, image_name: str):
     """
     Sends an email with JSON data and an image attachment using Gmail.
+    This function is now more robust, accepting image bytes directly and handling
+    potential missing credentials or data gracefully.
     """
     sender_email = os.getenv("GMAIL_SENDER_EMAIL")
     app_password = os.getenv("GMAIL_APP_PASSWORD")
 
     if not sender_email or not app_password:
-        print("ERROR: Gmail credentials not found in .env file.")
-        return False
+        print("--- GMAIL CREDENTIALS NOT FOUND ---")
+        print("Email sending is disabled. Saving artifacts to 'outbox/' instead.")
+        
+        # Fallback: Save the email content and image to a local 'outbox' directory.
+        outbox_dir = "outbox"
+        os.makedirs(outbox_dir, exist_ok=True)
+        
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        json_filename = os.path.join(outbox_dir, f"car_data_{timestamp}.json")
+        image_filename = os.path.join(outbox_dir, f"{timestamp}_{image_name}")
+
+        with open(json_filename, 'w') as f:
+            json.dump(json_data, f, indent=2)
+        
+        with open(image_filename, 'wb') as f:
+            f.write(image_bytes)
+            
+        print(f"Saved JSON to {json_filename}")
+        print(f"Saved image to {image_filename}")
+        return False # Indicate that the email was not sent.
 
     try:
-        # Create the email message
-        msg = MIMEMultipart()
+        # Create the email message using the modern EmailMessage class
+        msg = EmailMessage()
         msg['From'] = sender_email
         msg['To'] = recipient_email
-        msg['Subject'] = f"New Car Listing Submission: {json_data['car']['brand']} {json_data['car']['model']}"
+        
+        # Safely create the subject line
+        brand = json_data.get("car", {}).get("brand", "N/A")
+        model = json_data.get("car", {}).get("model", "N/A")
+        msg['Subject'] = f"New Car Listing Submission: {brand} {model}"
 
         # Attach the JSON data as the email body
-        # Using json.dumps for a formatted, easy-to-read JSON string
         body = f"A new car has been listed.\n\nDetails:\n{json.dumps(json_data, indent=2)}"
-        msg.attach(MIMEText(body, 'plain'))
+        msg.set_content(body)
 
-        # Attach the image
-        with open(image_path, 'rb') as f:
-            part = MIMEApplication(f.read(), Name=image_name)
-        part['Content-Disposition'] = f'attachment; filename="{image_name}"'
-        msg.attach(part)
+        # Attach the image from bytes
+        # Determine MIME type from filename extension
+        ctype, encoding = mimetypes.guess_type(image_name)
+        if ctype is None or encoding is not None:
+            ctype = 'application/octet-stream' # Generic fallback
+        maintype, subtype = ctype.split('/', 1)
+        
+        msg.add_attachment(image_bytes, maintype=maintype, subtype=subtype, filename=image_name)
 
-        # Connect to Gmail's SMTP server and send the email
+        # Connect to Gmail's SMTP server using SMTP_SSL for security and send the email
         print(f"\n--- Sending email to {recipient_email} ---")
-        server = smtplib.SMTP('smtp.gmail.com', 587)
-        server.starttls()
-        server.login(sender_email, app_password)
-        server.send_message(msg)
-        server.quit()
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
+            server.login(sender_email, app_password)
+            server.send_message(msg)
+        
         print("--- Email sent successfully! ---")
         return True
 
@@ -98,10 +126,13 @@ if __name__ == "__main__":
         print("Please download a test image and save it in the project folder.")
     else:
         # 3. Call the function
+        with open(test_image_file_path, 'rb') as f:
+            test_image_bytes = f.read()
+
         success = send_email(
             recipient_email=test_recipient,
             json_data=test_json,
-            image_path=test_image_file_path,
+            image_bytes=test_image_bytes,
             image_name=test_image_file_name
         )
 
