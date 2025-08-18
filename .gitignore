@@ -22,3 +22,10 @@ venv.bak/
 
 # fallback directory
 outbox/
+
+# Temporary files
+*.tmp   
+tmp/
+
+# Logs
+*.log
