@@ -46,17 +46,29 @@ a minor collision. Priced at 1 million L.E.
 **Output JSON:**
 ```json
 {
-  "car": {
-    "body_type": "sedan",
-    "color": "Blue",
-    "brand": "Ford", 
-    "model": "Fusion",
-    "manufactured_year": 2015,
-    "motor_size_cc": 2000,
-    "windows": "tinted",
-    "notices": [{"type": "collision", "description": "rear bumper replaced"}],
-    "price": {"amount": 1000000, "currency": "L.E"}
-  }
+    "car": {
+      "body_type": "sedan",
+      "color": "Blue",
+      "brand": "Ford",
+      "model": "Fusion",
+      "manufactured_year": 2015,
+      "motor_size_cc": 2000,
+      "tires": {
+        "type": "brand-new",
+        "manufactured_year": 2022
+      },
+      "windows": "tinted",
+      "notices": [
+        {
+          "type": "collision",
+          "description": "The rear bumper has been replaced after a minor collision."
+        }
+      ],
+      "price": {
+        "amount": 1000000,
+        "currency": "L.E"
+      }
+    }
 }
 ```
 
