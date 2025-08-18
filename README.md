@@ -1,17 +1,15 @@
 # 🚗 Car Listing Processor
 
-**Transform messy car descriptions into structured, validated JSON in seconds.**
+**AI system that converts unstructured car listing text and images into standardized JSON data for automotive platforms, with automated email delivery to designated recipients.**
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://python.org)
 [![Streamlit](https://img.shields.io/badge/streamlit-1.28+-red.svg)](https://streamlit.io)
 [![Azure OpenAI](https://img.shields.io/badge/azure-openai-green.svg)](https://azure.microsoft.com/en-us/products/ai-services/openai-service)
 
-> **Input:** "Blue Ford Fusion 2015, 2.0L engine, tinted windows, 1 million L.E"  
-> **Output:** Clean JSON with normalized fields, validation, and automatic email delivery
 
 ## ⚡ What It Does
 
-Converts unstructured car listings (text + image) → structured JSON → email delivery with bulletproof fallbacks.
+Converts unstructured car listings (text + image) → structured JSON → email delivery to designated recipients.
 
 **Built for production** with hardened prompts, strict validation, and comprehensive error handling.
 
@@ -19,9 +17,8 @@ Converts unstructured car listings (text + image) → structured JSON → email 
 
 - **🧠 AI-Powered Extraction** - GPT-4 with hardened prompts (injection-resistant)
 - **🔒 Strict Validation** - Pydantic models with year ranges (1975-2025)
-- **📧 Smart Delivery** - Email with automatic `outbox/` fallback
-- **⚙️ Data Normalization** - "2.0L" → 2000cc, "220K" → 220000
-- **🛡️ Production-Ready** - Token limits, error handling, logging
+- **📧 Email Delivery** - Sends processed listings to designated recipients
+- **🛡️ Robust Implementation** - Token limits, error handling, logging
 
 ## 🚀 Quick Start
 
@@ -64,10 +61,10 @@ Priced at 1 million L.E.
 ## 🏗️ Architecture
 
 ```
-┌─────────────┐    ┌──────────────┐    ┌─────────────┐    ┌─────────────┐
-│ Streamlit   │───▶│ LLM Parser   │───▶│ Validation  │───▶│ Email/Save  │
-│ Frontend    │    │ (Hardened)   │    │ (Pydantic)  │    │ (Fallback)  │
-└─────────────┘    └──────────────┘    └─────────────┘    └─────────────┘
+┌───────────┐    ┌────────────┐    ┌────────────┐    ┌────────────┐
+│ Streamlit │--->│ LLM Parser │--->│ Validation │--->│ Email/Save │
+│ Frontend  │    │ (Hardened) │    │ (Pydantic) │    │ (Fallback) │
+└───────────┘    └────────────┘    └────────────┘    └────────────┘
 ```
 
 **Key Files:**
@@ -75,23 +72,6 @@ Priced at 1 million L.E.
 - `llm_parser.py` - Hardened prompts + Pydantic models  
 - `utils.py` - Email delivery + image analysis
 - `.env.example` - Configuration template
-
-## ⚙️ Configuration
-
-Copy `.env.example` → `.env` and configure:
-
-```bash
-# Azure OpenAI (Required)
-AZURE_OPENAI_DEPLOYMENT_NAME="gpt-4o"
-AZURE_OPENAI_API_VERSION="2024-02-15-preview"
-AZURE_OPENAI_ENDPOINT="https://your-resource.openai.azure.com/"
-AZURE_OPENAI_API_KEY="your-key"
-
-# Gmail (Required - use App Password)
-GMAIL_SENDER_EMAIL="sender@gmail.com"
-GMAIL_APP_PASSWORD="16-digit-app-password"
-GMAIL_RECIPIENT_EMAIL="listings@company.com"
-```
 
 ## 🛡️ Security & Hardening
 
@@ -107,8 +87,8 @@ GMAIL_RECIPIENT_EMAIL="listings@company.com"
 
 **Error Handling:**
 - Specific catches for API, parsing, and SMTP failures
-- Graceful fallback to local `outbox/` directory
 - Comprehensive logging for debugging
+- Development fallback: saves to local `outbox/` directory when email credentials are missing (testing convenience)
 
 ## 🧪 Testing & Validation
 
@@ -123,10 +103,9 @@ streamlit run app.py
 
 ## 🎛️ Production Optimizations
 
-- **Token Efficiency:** Optimized prompts reduce costs by ~30%
-- **Input Limits:** 500 char descriptions, 5MB images
+- **Token Efficiency:** Optimized prompts reduce costs
+- **Input Limits:** 800 char descriptions, 5MB images
 - **Capped Responses:** 300 tokens max (sufficient for complete JSON)
-- **Deterministic Output:** Temperature 0, consistent results
 
 ## 📝 License
 
