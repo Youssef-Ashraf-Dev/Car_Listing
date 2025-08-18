@@ -19,3 +19,6 @@ venv.bak/
 *.jpg
 *.jpeg
 *.png
+
+# fallback directory
+outbox/
