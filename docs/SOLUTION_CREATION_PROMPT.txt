@@ -1,0 +1,115 @@
+Title: Design and Build an AI-Powered Car Listing Tool
+
+You are an expert Python developer specializing in building AI-powered web applications. Your task is to generate a complete, production-ready solution for a car listing submission tool based on the following detailed requirements.
+
+- Core Functional Requirements:
+
+1. User Interface (UI):
+   - Develop a simple and clean graphical user interface using the "Streamlit" library.
+   - The UI must provide widgets for a user to upload a single car image (JPG/PNG) and enter a multi-line text description.
+   - A clear "Submit" button must trigger the data processing workflow.
+
+2. AI-Powered Text Processing:
+   - Use the "LangChain" library to build a chain that interacts with an LLM: Azure OpenAI `GPT-4o mini` model.
+   - The primary task for that LLM is to parse the user's unstructured text description and convert it into a strictly defined JSON object. The target JSON structure is provided below.
+   - Implement a reliable method to ensure the LLM's output conforms to the required schema using a data validation library like Pydantic.
+
+3. Image-Based Classification (Simulated):
+   - The final JSON report requires a `body_type` field (e.g., "sedan", "SUV"). This feature will eventually be determined by a computer vision model. (currently not available)
+   - For now, create a `dummy_function` that accepts the image data as input but returns a randomly selected car body type, acting as a placeholder for future integration.
+
+4. Data Output:
+   - The application must send the final, combined JSON data and the original user-uploaded image as an email to a configured recipient address Using Gmail `SMTP`
+
+- Non-Functional & Technical Requirements:
+
+1. Architecture:
+   - The solution should be modular. Structure the code into multiple files for separation of concerns:
+
+2. Security:
+   - Implement simple but effective measures to mitigate LLM prompt injection.
+
+3. Efficiency:
+   - Configure the LLM prompting for deterministic, low-cost outputs (e.g., by setting a low temperature and a reasonable `max_tokens` limit).
+
+4. Robustness:
+   - The application must handle potential errors gracefully. Provide clear feedback to the user if inputs are missing, if the AI processing fails, or if the email cannot be sent.
+   - Ensure all credentials and sensitive information are loaded from environment variables (`.env` file), not hardcoded.
+
+
+- Few examples (for parser behavior)
+
+Example 1
+Input:
+Blue Ford Fusion produced in 2015 featuring a 2.0-liter engine. The vehicle has low mileage with only 40,000 miles on the odometer. Equipped with brand-new all-season tires manufactured in 2022. The car's windows are tinted for added privacy. Notably, the rear bumper has been replaced after a minor collision. Priced at 1 million L.E.
+
+Expected JSON (parser output before body_type merge):
+{
+  "car": {
+    "body_type": "TBD",
+    "color": "Blue",
+    "brand": "Ford",
+    "model": "Fusion",
+    "manufactured_year": 2015,
+    "motor_size_cc": 2000,
+    "tires": {
+      "type": "brand-new",
+      "manufactured_year": 2022
+    },
+    "windows": "tinted",
+    "notices": [
+      {
+        "type": "collision",
+        "description": "The rear bumper has been replaced after a minor collision."
+      }
+    ],
+    "price": {
+      "amount": 1000000,
+      "currency": "L.E"
+    }
+  }
+}
+
+Example 2
+Input:
+White Daewoo Juliet manufactured at 2001 with a motor size of 1500 cc and the four tires are used they are from 2020. The windows are electrical. There is a small notice the wind shield has been changed due to a small accident. Estimated price is 220K L.E.
+
+Expected JSON (parser output before body_type merge):
+{
+  "car": {
+    "body_type": "TBD",
+    "color": "White",
+    "brand": "Daewoo",
+    "model": "Juliet",
+    "manufactured_year": 2001,
+    "motor_size_cc": 1500,
+    "tires": {
+      "type": "used",
+      "manufactured_year": 2020
+    },
+    "windows": "electrical",
+    "notices": [
+      {
+        "type": "small accident",
+        "description": "The wind shield has been changed."
+      }
+    ],
+    "price": {
+      "amount": 220000,
+      "currency": "L.E"
+    }
+  }
+}
+
+- Error handling and logging:
+1. Handle OpenAI API errors (auth, rate limit, connection), SMTP errors.
+2. Show friendly messages in the UI; log details to console.
+3. Always cleanup any temp files if you create them (prefer in-memory bytes to avoid disk if possible).
+
+
+- Acceptance criteria:
+1. The app runs locally.
+2. The parser extracts correct fields for the provided few-shot examples.
+3. `body_type` is set by the image classifier (dummy functiona for now).
+4. Email sends within a few seconds of submission.
+5. README provides clear setup, run, test, and troubleshooting steps.
