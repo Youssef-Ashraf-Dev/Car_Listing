@@ -1,6 +1,10 @@
 # 🚗 Car Listing Processor
 
-**AI system that converts unstructured car listing text and images into standardized JSON data for automotive platforms, with automated email delivery to designated recipients.**
+**AI system that converts unstructured car listing tex## 🔄 Process Flow
+
+![Sequence Diagram](diagrams/sequence-diagram.png)
+
+## 🛡️ Security & Hardening images into standardized JSON data for automotive platforms, with automated email delivery to designated recipients.**
 
 ![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=fff)
 [![Streamlit](https://img.shields.io/badge/streamlit-1.28+-red.svg)](https://streamlit.io)
@@ -74,12 +78,7 @@ a minor collision. Priced at 1 million L.E.
 
 ## 🏗️ Architecture
 
-```
-┌───────────┐    ┌────────────┐    ┌────────────┐    ┌────────────┐
-│ Streamlit │--->│ LLM Parser │--->│ Validation │--->│ Email/Save │
-│ Frontend  │    │ (Hardened) │    │ (Pydantic) │    │ (Fallback) │
-└───────────┘    └────────────┘    └────────────┘    └────────────┘
-```
+![Architecture Diagram](diagrams/architecture-diagram.png)
 
 **Key Files:**
 - `app.py` - Streamlit UI & orchestration
@@ -87,7 +86,11 @@ a minor collision. Priced at 1 million L.E.
 - `utils.py` - Email delivery + image analysis
 - `.env.example` - Configuration template
 
-## 🛡️ Security & Hardening
+## � Process Flow
+
+![Sequence Diagram](assets/sequence-diagram.png)
+
+## �🛡️ Security & Hardening
 
 **Prompt Injection Protection:**
 - Strict system instructions that forbid responding to user commands
