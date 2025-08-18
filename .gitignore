@@ -15,10 +15,10 @@ venv.bak/
 .vscode/
 .history/
 
-# Images
-*.jpg
-*.jpeg
-*.png
+# Testing Car Image
+test_car.jpg
+test_car1.jpg
+test_car2.jpg
 
 # fallback directory
 outbox/
