@@ -1,10 +1,6 @@
-# 🚗 Car Listing Processor
+# 🚗 Car Listing Submitting Tool
 
-**AI system that converts unstructured car listing tex## 🔄 Process Flow
-
-![Sequence Diagram](diagrams/sequence-diagram.png)
-
-## 🛡️ Security & Hardening images into standardized JSON data for automotive platforms, with automated email delivery to designated recipients.**
+**AI system that converts unstructured car listing text and images into standardized JSON data for automotive platforms, with automated email delivery to designated recipients.**
 
 ![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=fff)
 [![Streamlit](https://img.shields.io/badge/streamlit-1.28+-red.svg)](https://streamlit.io)
@@ -78,7 +74,7 @@ a minor collision. Priced at 1 million L.E.
 
 ## 🏗️ Architecture
 
-![Architecture Diagram](diagrams/architecture-diagram.png)
+![Architecture Diagram](docs/diagrams/architecture-diagram.png)
 
 **Key Files:**
 - `app.py` - Streamlit UI & orchestration
@@ -88,7 +84,7 @@ a minor collision. Priced at 1 million L.E.
 
 ## � Process Flow
 
-![Sequence Diagram](assets/sequence-diagram.png)
+![Sequence Diagram](docs/diagrams/sequence-diagram.png)
 
 ## �🛡️ Security & Hardening
 
