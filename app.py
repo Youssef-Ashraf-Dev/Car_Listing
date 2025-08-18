@@ -13,13 +13,15 @@ from openai import APIConnectionError, RateLimitError, AuthenticationError
 load_dotenv()
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 
 def process_submission(image_file, description):
     """
     Process a car listing submission by handling the image and text description.
-    
+
     This function handles the complete workflow:
     1. Securely saves the uploaded image to a temporary file
     2. Uses the LLM to extract structured car data from the text description
@@ -27,11 +29,11 @@ def process_submission(image_file, description):
     4. Analyzes the image to determine the car type (sedan, SUV, etc.)
     5. Sends the final data and image via email
     6. Cleans up temporary files
-    
+
     Args:
         image_file: The uploaded image file object from Streamlit
         description: String containing the user's car description
-        
+
     Returns:
         tuple: (success, result, email_sent)
             - success: Boolean indicating if processing succeeded
@@ -39,7 +41,9 @@ def process_submission(image_file, description):
             - email_sent: Boolean indicating if the email was sent successfully
     """
     # Use a temporary file to securely handle the uploaded image
-    with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(image_file.name)[1]) as tmp:
+    with tempfile.NamedTemporaryFile(
+        delete=False, suffix=os.path.splitext(image_file.name)[1]
+    ) as tmp:
         tmp.write(image_file.getbuffer())
         temp_image_path = tmp.name
 
@@ -87,9 +91,9 @@ def process_submission(image_file, description):
             recipient_email=recipient_email,
             json_data=car_data_dict,
             image_bytes=image_bytes,
-            image_name=image_file.name
+            image_name=image_file.name,
         )
-        
+
         st.info("Step 4/4: Finalizing...")
         return True, car_data_dict, email_sent
 
@@ -98,7 +102,7 @@ def process_submission(image_file, description):
         logging.error(f"OutputParserException: {e}")
         st.error(error_message)
         return False, "Failed to parse description.", False
-        
+
     except (APIConnectionError, RateLimitError) as e:
         error_message = "The AI service is currently unavailable or busy. Please try again in a few moments."
         logging.error(f"OpenAI API Error: {type(e).__name__} - {e}")
@@ -114,7 +118,9 @@ def process_submission(image_file, description):
     except Exception as e:
         # Catch-all for any other unexpected errors
         error_message = "An unexpected error occurred during processing. The technical team has been notified."
-        logging.error(f"An unexpected error occurred in process_submission: {e}", exc_info=True)
+        logging.error(
+            f"An unexpected error occurred in process_submission: {e}", exc_info=True
+        )
         st.error(error_message)
         return False, "An unexpected error occurred.", False
     finally:
@@ -130,7 +136,8 @@ st.title("🚗 Car Listing Submission Portal")
 
 # Application instructions in an expandable section
 with st.expander("ℹ️ How to Use This Form"):
-    st.markdown("""
+    st.markdown(
+        """
     Welcome! This tool helps you list a car by extracting details from your text description and image.
     
     **Follow these steps:**
@@ -148,7 +155,8 @@ with st.expander("ℹ️ How to Use This Form"):
     The system will then analyze the data, determine the car type from the image, and email the final listing.
     
     **Limits:** Description: 800 chars max | Image: 5MB max | Supported formats: JPG, JPEG, PNG
-    """)
+    """
+    )
 
 # Create two-column layout for description and image upload
 col1, col2 = st.columns(2)
@@ -161,7 +169,9 @@ MAX_IMAGE_SIZE_BYTES = MAX_IMAGE_SIZE_MB * 1024 * 1024
 # Left column - Text description input
 with col1:
     st.subheader("1. Provide Car Description")
-    description = st.text_area("Enter the car details here:", height=300, max_chars=MAX_DESC_LENGTH)
+    description = st.text_area(
+        "Enter the car details here:", height=300, max_chars=MAX_DESC_LENGTH
+    )
     if description:
         remaining_chars = MAX_DESC_LENGTH - len(description)
         # Visual feedback about character limit
@@ -177,10 +187,14 @@ with col2:
     if uploaded_file:
         # Validate image size before processing
         if uploaded_file.size > MAX_IMAGE_SIZE_BYTES:
-            st.error(f"❌ Image size ({uploaded_file.size / (1024*1024):.1f}MB) exceeds the {MAX_IMAGE_SIZE_MB}MB limit. Please upload a smaller file.")
+            st.error(
+                f"❌ Image size ({uploaded_file.size / (1024*1024):.1f}MB) exceeds the {MAX_IMAGE_SIZE_MB}MB limit. Please upload a smaller file."
+            )
             uploaded_file = None
         else:
-            st.image(uploaded_file, caption="Uploaded Car Image", use_container_width=True)
+            st.image(
+                uploaded_file, caption="Uploaded Car Image", use_container_width=True
+            )
             st.caption(f"✅ Image size: {uploaded_file.size / (1024*1024):.1f}MB")
 
 # --- Submission Button and Processing Logic ---
@@ -188,19 +202,19 @@ st.subheader("3. Submit Your Listing")
 if st.button("Submit Listing", use_container_width=True):
     # Comprehensive input validation before processing
     error_messages = []
-    
+
     # Validate image upload
     if uploaded_file is None:
         error_messages.append("Please upload a car image")
     elif uploaded_file.size > MAX_IMAGE_SIZE_BYTES:
         error_messages.append(f"Image size exceeds {MAX_IMAGE_SIZE_MB}MB limit")
-    
+
     # Validate description text
     if not description or not description.strip():
         error_messages.append("Please provide a car description")
     elif len(description) > MAX_DESC_LENGTH:
         error_messages.append(f"Description exceeds {MAX_DESC_LENGTH} character limit")
-    
+
     # Display all validation errors (if any)
     if error_messages:
         for msg in error_messages:
@@ -209,21 +223,25 @@ if st.button("Submit Listing", use_container_width=True):
         # All validation passed - process the submission
         with st.spinner("Processing your submission... Please wait."):
             success, result, email_sent = process_submission(uploaded_file, description)
-            
+
         # Handle the result based on success/failure
         if success:
             st.success("✅ Car listing processed successfully!")
-            
+
             st.subheader("Extracted Car Information")
             st.json(result)
-            
+
             # Email status feedback
             if email_sent:
                 st.success("📧 Email sent successfully to the listing manager!")
             else:
-                st.error("⚠️ Email could not be sent. Please check the `.env` configuration and terminal for errors.")
+                st.error(
+                    "⚠️ Email could not be sent. Please check the `.env` configuration and terminal for errors."
+                )
         else:
             # Error handling with helpful guidance
             st.error(f"❌ An error occurred. Please review the details below.")
             st.error(result)
-            st.info("Please ensure your description includes all required details about the car.")
+            st.info(
+                "Please ensure your description includes all required details about the car."
+            )
