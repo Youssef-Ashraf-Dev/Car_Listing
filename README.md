@@ -2,16 +2,17 @@
 
 **AI system that converts unstructured car listing text and images into standardized JSON data for automotive platforms, with automated email delivery to designated recipients.**
 
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://python.org)
+[![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=fff)]
 [![Streamlit](https://img.shields.io/badge/streamlit-1.28+-red.svg)](https://streamlit.io)
-[![Azure OpenAI](https://img.shields.io/badge/azure-openai-green.svg)](https://azure.microsoft.com/en-us/products/ai-services/openai-service)
+[![ChatGPT](https://img.shields.io/badge/ChatGPT-74aa9c?logo=openai&logoColor=white)]
+[![LangChain](https://img.shields.io/badge/LangChain-1c3c3c.svg?logo=langchain&logoColor=white)]
+[![Microsoft Azure](https://custom-icon-badges.demolab.com/badge/Microsoft%20Azure-0089D6?logo=msazure&logoColor=white)]
+[![Pydantic v2](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/pydantic/pydantic/main/docs/badge/v2.json)](https://docs.pydantic.dev/latest/contributing/#badges)
 
 
 ## ⚡ What It Does
 
 Converts unstructured car listings (text + image) → structured JSON → email delivery to designated recipients.
-
-**Built for production** with hardened prompts, strict validation, and comprehensive error handling.
 
 ## 🎯 Core Features
 
@@ -36,9 +37,7 @@ streamlit run app.py
 
 **Input Text:**
 ```
-Blue Ford Fusion produced in 2015 featuring a 2.0-liter engine. 
-Tinted windows. Rear bumper replaced after minor collision. 
-Priced at 1 million L.E.
+Blue Ford Fusion produced in 2015 featuring a 2.0-liter engine. The vehicle has low mileage with only 40,000 miles on the odometer. Equipped with brand-new all-season tires manufactured in 2022. The car's windows are tinted for added privacy. Notably, the rear bumper has been replaced after a minor collision. Priced at 1 million L.E.
 ```
 
 **Output JSON:**
@@ -106,7 +105,3 @@ streamlit run app.py
 - **Token Efficiency:** Optimized prompts reduce costs
 - **Input Limits:** 800 char descriptions, 5MB images
 - **Capped Responses:** 300 tokens max (sufficient for complete JSON)
-
-## 📝 License
-
-MIT License - see [LICENSE](LICENSE) for details.
