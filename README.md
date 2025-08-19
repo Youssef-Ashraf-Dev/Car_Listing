@@ -75,9 +75,7 @@ a minor collision. Priced at 1 million L.E.
 }
 ```
 
-## 🏗️ Architecture
-
-![Architecture Diagram](docs/diagrams/architecture-diagram.png)
+## 🏗️ Solution Architecture
 
 **Key Files:**
 - `app.py` - Streamlit UI & orchestration
@@ -85,7 +83,11 @@ a minor collision. Priced at 1 million L.E.
 - `utils.py` - Email delivery + image analysis
 - `.env.example` - Configuration template
 
-## Process Flow
+## Architecture Diagram
+
+![Architecture Diagram](docs/diagrams/architecture-diagram.png)
+
+## Sequence Diagram
 
 ![Sequence Diagram](docs/diagrams/Sequence-diagram.png)
 
