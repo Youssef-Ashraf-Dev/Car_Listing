@@ -42,6 +42,9 @@ only 40,000 miles on the odometer. Equipped with brand-new all-season tires manu
 The car's windows are tinted for added privacy. Notably, the rear bumper has been replaced after
 a minor collision. Priced at 1 million L.E.
 ```
+**Input Image:**
+
+![Input Image](test_car.jpg)
 
 **Output JSON:**
 ```json
@@ -82,11 +85,11 @@ a minor collision. Priced at 1 million L.E.
 - `utils.py` - Email delivery + image analysis
 - `.env.example` - Configuration template
 
-## � Process Flow
+## Process Flow
 
-![Sequence Diagram](docs/diagrams/sequence-diagram.png)
+![Sequence Diagram](docs/diagrams/Sequence-diagram.png)
 
-## �🛡️ Security & Hardening
+## 🛡️ Security & Hardening
 
 **Prompt Injection Protection:**
 - Strict system instructions that forbid responding to user commands
